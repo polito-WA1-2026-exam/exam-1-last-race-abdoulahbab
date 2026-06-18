@@ -10,11 +10,11 @@ app.use(express.json());
 app.get("/api/network", async (req, res, next) => {
   try {
     const network = await getNetwork();
-    res.json(network);
-  } catch (err) {
-    next(err);
+    res.json(network)
   }
-});
+  catch (err) {
+    next(err)
+}});
 
 app.use((err, req, res, next) => {
   console.error(err);
