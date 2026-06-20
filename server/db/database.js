@@ -5,7 +5,8 @@ import sqlite3 from "sqlite3";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const databasePath = path.join(__dirname, "last-race.sqlite");
+const databasePath =
+  process.env.LAST_RACE_DB_PATH ?? path.join(__dirname, "last-race.sqlite");
 
 const db = new sqlite3.Database(databasePath, (err) => {
   if (err) {
@@ -49,6 +50,19 @@ export function run(sql, params = []) {
       }
     });
   });
+}
+
+export async function withTransaction(work) {
+  await run("BEGIN IMMEDIATE TRANSACTION");
+
+  try {
+    const result = await work();
+    await run("COMMIT");
+    return result;
+  } catch (err) {
+    await run("ROLLBACK").catch(() => {});
+    throw err;
+  }
 }
 
 export function closeDatabase() {

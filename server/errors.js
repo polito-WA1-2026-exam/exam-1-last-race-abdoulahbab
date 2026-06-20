@@ -18,3 +18,7 @@ export function forbidden(message = "You cannot access this resource.") {
 export function notFound(message = "Resource not found.") {
   return new AppError(404, "NOT_FOUND", message);
 }
+
+export function conflict(message = "Request conflicts with current state.") {
+  return new AppError(409, "CONFLICT", message);
+}

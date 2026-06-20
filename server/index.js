@@ -13,7 +13,12 @@ import { configurePassport } from "./auth/passport.js";
 import { getNetwork } from "./dao/networkDao.js";
 import { badRequest } from "./errors.js";
 import { requireAuthenticatedUser } from "./middleware/auth.js";
-import { createGameForUser, getOwnedGame } from "./services/gameService.js";
+import {
+  createGameForUser,
+  getOwnedGameWithSteps,
+  getRankings,
+  submitRouteForGame,
+} from "./services/gameService.js";
 
 const app = express();
 
@@ -121,13 +126,52 @@ app.get(
     }
 
     try {
-      const game = await getOwnedGame(req.user.id, gameId);
-      return res.json({ game });
+      const gameResult = await getOwnedGameWithSteps(req.user.id, gameId);
+      return res.json(gameResult);
     } catch (err) {
       return next(err);
     }
   },
 );
+
+app.post(
+  "/api/games/:gameId/route",
+  requireAuthenticatedUser,
+  async (req, res, next) => {
+    const gameId = Number(req.params.gameId);
+
+    if (!Number.isInteger(gameId) || gameId <= 0) {
+      return next(badRequest("Game ID must be a positive integer."));
+    }
+
+    const { segmentIds } = req.body ?? {};
+
+    if (
+      !Array.isArray(segmentIds) ||
+      !segmentIds.every(
+        (segmentId) => Number.isInteger(segmentId) && segmentId > 0,
+      )
+    ) {
+      return next(badRequest("segmentIds must be an array of positive integers."));
+    }
+
+    try {
+      const result = await submitRouteForGame(req.user.id, gameId, segmentIds);
+      return res.json(result);
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
+
+app.get("/api/rankings", requireAuthenticatedUser, async (req, res, next) => {
+  try {
+    const rankings = await getRankings();
+    return res.json({ rankings });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 app.use((err, req, res, next) => {
   const status = err.status ?? 500;
