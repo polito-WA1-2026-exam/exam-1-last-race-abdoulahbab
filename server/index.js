@@ -11,7 +11,9 @@ import {
 } from "./config.js";
 import { configurePassport } from "./auth/passport.js";
 import { getNetwork } from "./dao/networkDao.js";
+import { badRequest } from "./errors.js";
 import { requireAuthenticatedUser } from "./middleware/auth.js";
+import { createGameForUser, getOwnedGame } from "./services/gameService.js";
 
 const app = express();
 
@@ -99,11 +101,45 @@ app.get("/api/network", requireAuthenticatedUser, async (req, res, next) => {
   }
 });
 
+app.post("/api/games", requireAuthenticatedUser, async (req, res, next) => {
+  try {
+    const game = await createGameForUser(req.user.id);
+    res.status(201).json({ game });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get(
+  "/api/games/:gameId",
+  requireAuthenticatedUser,
+  async (req, res, next) => {
+    const gameId = Number(req.params.gameId);
+
+    if (!Number.isInteger(gameId) || gameId <= 0) {
+      return next(badRequest("Game ID must be a positive integer."));
+    }
+
+    try {
+      const game = await getOwnedGame(req.user.id, gameId);
+      return res.json({ game });
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
+
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({
-    error: "INTERNAL_SERVER_ERROR",
-    message: "Unexpected server error.",
+  const status = err.status ?? 500;
+
+  if (status >= 500) {
+    console.error(err);
+  }
+
+  res.status(status).json({
+    error: err.error ?? "INTERNAL_SERVER_ERROR",
+    message: err.status ? err.message : "Unexpected server error.",
+    details: err.details ?? [],
   });
 });
 
