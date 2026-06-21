@@ -14,9 +14,12 @@ export default function AppLayout() {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <div>
-          <p className="eyebrow">WA1 Exam Project</p>
-          <h1>Last Race</h1>
+        <div className="brand-lockup">
+          <span className="brand-mark">LR</span>
+          <div>
+            <p className="eyebrow">Metro strategy game</p>
+            <h1>Last Race</h1>
+          </div>
         </div>
         <nav className="nav">
           <NavLink to="/">Home</NavLink>

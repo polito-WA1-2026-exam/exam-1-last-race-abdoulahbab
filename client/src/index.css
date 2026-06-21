@@ -1,24 +1,35 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
+  --bg: #f3f1ea;
   --surface: #ffffff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
+  --surface-soft: #f7f5ef;
+  --surface-dark: #111111;
+  --text: #5f625f;
+  --text-h: #141414;
+  --text-inverse: #ffffff;
+  --border: #ded9ce;
+  --code-bg: #ebe7dc;
+  --accent: #111111;
+  --accent-strong: #e30613;
+  --accent-bg: rgba(227, 6, 19, 0.08);
+  --accent-border: rgba(227, 6, 19, 0.32);
+  --danger: #dc2626;
+  --success: #16a34a;
+  --m1: #e30613;
+  --m2: #009a44;
+  --m3: #ffd100;
+  --m4: #0072ce;
+  --m5: #a05eb5;
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    rgba(31, 26, 17, 0.1) 0 22px 50px -28px,
+    rgba(31, 26, 17, 0.08) 0 8px 24px -18px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -31,29 +42,14 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --surface: #1f2028;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
 body {
   margin: 0;
+  min-width: 1100px;
+  background:
+    linear-gradient(90deg, rgba(20, 20, 20, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(20, 20, 20, 0.035) 1px, transparent 1px),
+    var(--bg);
+  background-size: 56px 56px, 56px 56px, auto;
 }
 
 #root {
@@ -63,17 +59,16 @@ body {
 h1,
 h2 {
   font-family: var(--heading);
-  font-weight: 500;
+  font-weight: 800;
   color: var(--text-h);
 }
 
 h1 {
-  font-size: 42px;
-  letter-spacing: -1px;
-  margin: 24px 0;
+  font-size: 44px;
+  letter-spacing: -1.3px;
+  margin: 0;
   @media (max-width: 1024px) {
     font-size: 36px;
-    margin: 20px 0;
   }
 }
 h2 {

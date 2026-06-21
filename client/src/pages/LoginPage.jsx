@@ -42,8 +42,8 @@ export default function LoginPage() {
   return (
     <section className="page narrow-page">
       <div className="card">
-        <p className="eyebrow">Session authentication</p>
-        <h2>Login</h2>
+        <p className="eyebrow">Reserved platform</p>
+        <h2>Login to start a run</h2>
         <form className="form" onSubmit={handleSubmit}>
           <label>
             Username

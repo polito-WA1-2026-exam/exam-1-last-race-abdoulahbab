@@ -41,7 +41,7 @@ export default function RankingPage() {
     <section className="page">
       <div className="card">
         <p className="eyebrow">Best successful score per user</p>
-        <h2>General Ranking</h2>
+        <h2>Metro Ranking</h2>
         {loading && <p className="muted">Loading ranking...</p>}
         <ErrorMessage message={error} />
         {!loading && rankings.length === 0 && <p>No successful games yet.</p>}

@@ -7,13 +7,13 @@ export default function HomePage() {
 
   return (
     <section className="page hero-page">
-      <div className="card">
-        <p className="eyebrow">Desktop browser game</p>
-        <h2>Plan a route, survive random events, finish with the best score.</h2>
+      <div className="card hero-card">
+        <p className="eyebrow">Plan. Ride. Survive.</p>
+        <h2>Cross the metro network before the last ride runs out.</h2>
         <p>
-          Last Race is a React and Node.js game. The server controls authentication,
-          start and destination stations, route validation, random events, scores,
-          and rankings.
+          Last Race is a desktop React and Node.js game where the server controls
+          authentication, stations, route validation, random events, scores, and
+          rankings.
         </p>
         <div className="actions">
           {status === "loading" && <span className="muted">Checking session...</span>}

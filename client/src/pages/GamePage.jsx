@@ -77,6 +77,11 @@ export default function GamePage() {
 
   const planningOpen =
     game?.status === "PLANNING" && !routeResult && remainingSeconds > 0;
+  const canSubmitRoute =
+    game?.status === "PLANNING" &&
+    !routeResult &&
+    (selectedSegmentIds.length > 0 || remainingSeconds === 0) &&
+    !submitting;
 
   async function handleNewGame() {
     setLoading(true);
@@ -174,6 +179,7 @@ export default function GamePage() {
             remainingSeconds={remainingSeconds}
             routeResult={routeResult}
             planningOpen={planningOpen}
+            canSubmitRoute={canSubmitRoute}
             submitting={submitting}
             onUndo={handleUndo}
             onSubmitRoute={handleSubmitRoute}
@@ -190,12 +196,23 @@ function NetworkPanel({ game, network, routeState, planningOpen, onSelectSegment
   const lineById = useMemo(() => mapById(network.lines), [network.lines]);
 
   return (
-    <div className="card">
+    <div className="card network-card">
       <p className="eyebrow">Network</p>
+      <div className="metro-legend">
+        {network.lines.map((line) => (
+          <span key={line.id} className="line-chip">
+            <span className="line-dot" style={{ backgroundColor: lineColor(line) }} />
+            {line.name}
+          </span>
+        ))}
+      </div>
       <div className="line-list">
         {network.lines.map((line) => (
           <div key={line.id} className="line-card">
-            <h3 style={{ borderColor: line.color }}>{line.name}</h3>
+            <h3>
+              <span className="line-dot" style={{ backgroundColor: lineColor(line) }} />
+              {line.name}
+            </h3>
             <div className="station-chain">
               {line.stationIds.map((stationId) => {
                 const station = stationById.get(stationId);
@@ -215,6 +232,13 @@ function NetworkPanel({ game, network, routeState, planningOpen, onSelectSegment
                     ].join(" ")}
                   >
                     {station.name}
+                    {isStart && <span className="station-tag start-tag">START</span>}
+                    {isDestination && (
+                      <span className="station-tag destination-tag">END</span>
+                    )}
+                    {isCurrent && !isStart && !isDestination && (
+                      <span className="station-tag current-tag">NOW</span>
+                    )}
                   </span>
                 );
               })}
@@ -241,7 +265,10 @@ function NetworkPanel({ game, network, routeState, planningOpen, onSelectSegment
                 className="segment-button"
                 onClick={() => onSelectSegment(segment.id)}
               >
-                <span style={{ backgroundColor: line.color }} />
+                <span
+                  className="segment-dot"
+                  style={{ backgroundColor: lineColor(line) }}
+                />
                 {stationA.name} - {stationB.name}
               </button>
             );
@@ -259,6 +286,7 @@ function PlanningPanel({
   remainingSeconds,
   routeResult,
   planningOpen,
+  canSubmitRoute,
   submitting,
   onUndo,
   onSubmitRoute,
@@ -299,7 +327,7 @@ function PlanningPanel({
 
           return (
             <li key={segmentId}>
-              <span style={{ backgroundColor: line.color }} />
+              <span className="route-dot" style={{ backgroundColor: lineColor(line) }} />
               {stationById.get(segment.stationAId).name} -{" "}
               {stationById.get(segment.stationBId).name}
             </li>
@@ -319,7 +347,7 @@ function PlanningPanel({
         <button
           type="button"
           className="button primary"
-          disabled={submitting || !planningOpen || selectedSegmentIds.length === 0}
+          disabled={!canSubmitRoute}
           onClick={onSubmitRoute}
         >
           {submitting ? "Submitting..." : "Submit route"}
@@ -330,7 +358,10 @@ function PlanningPanel({
         <p className="success-message">Destination reached. Submit the route.</p>
       )}
       {!planningOpen && !routeResult && game.status === "PLANNING" && (
-        <p className="error-message">Planning deadline expired. Submit to finalize score zero.</p>
+        <p className="error-message">
+          Planning deadline expired. Submit your route to let the server finalize the
+          game.
+        </p>
       )}
       {routeResult && (
         <ResultPanel routeResult={routeResult} game={game} onNewGame={onNewGame} />
@@ -435,4 +466,15 @@ function segmentTouchesStation(segment, stationId) {
 
 function otherStationId(segment, stationId) {
   return segment.stationAId === stationId ? segment.stationBId : segment.stationAId;
+}
+
+const MILAN_LINE_COLORS = {
+  "Red Line": "#E30613",
+  "Green Line": "#009A44",
+  "Yellow Line": "#FFD100",
+  "Blue Line": "#0072CE",
+};
+
+function lineColor(line) {
+  return MILAN_LINE_COLORS[line.name] ?? line.color;
 }
