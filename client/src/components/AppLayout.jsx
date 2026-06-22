@@ -15,7 +15,6 @@ export default function AppLayout() {
     <div className="app-shell">
       <header className="topbar">
         <div className="brand-lockup">
-          <span className="brand-mark">LR</span>
           <div>
             <p className="eyebrow">Metro strategy game</p>
             <h1>Last Race</h1>

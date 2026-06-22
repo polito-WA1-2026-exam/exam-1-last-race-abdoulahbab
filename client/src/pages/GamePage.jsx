@@ -149,12 +149,9 @@ export default function GamePage() {
       <ErrorMessage message={error} />
       {network && !game && (
         <div className="card">
-          <p className="eyebrow">Server-controlled setup</p>
+          <p className="eyebrow">Game setup</p>
           <h2>No active game yet</h2>
-          <p>
-            Click New game to ask the server for start and destination stations.
-            This avoids accidental duplicate game creation in React Strict Mode.
-          </p>
+          <p>Click New game to receive your start and destination stations.</p>
           <div className="actions">
             <button type="button" className="button primary" onClick={handleNewGame}>
               New game
@@ -359,8 +356,7 @@ function PlanningPanel({
       )}
       {!planningOpen && !routeResult && game.status === "PLANNING" && (
         <p className="error-message">
-          Planning deadline expired. Submit your route to let the server finalize the
-          game.
+          Planning deadline expired. Submit your route to finish the game.
         </p>
       )}
       {routeResult && (
